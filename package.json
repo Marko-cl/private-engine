@@ -39,8 +39,7 @@
       "buildResources": "build"
     },
     "files": [
-      "dist/main/**/*",
-      "dist/renderer/**/*",
+      "dist/**/*",
       "package.json",
       "!**/*.ts",
       "!**/*.map"
