@@ -1,0 +1,3 @@
+import { MEMORY_RELATIONSHIPS } from './memory-relationships';
+import { canonicalMemoryConcept } from './memory-canonicalization';
+export function expandSafeQuery(query: string) { const terms = query.trim().slice(0, 500).split(/\s+/).filter(Boolean).slice(0, 20); const output = new Set(terms); for (const term of terms) { const canonical = canonicalMemoryConcept(term); const mapping = MEMORY_RELATIONSHIPS.find(item => canonicalMemoryConcept(item.name).toLowerCase() === canonical.toLowerCase()); for (const related of mapping?.related ?? []) output.add(canonicalMemoryConcept(related)); } return [...output].slice(0, 40).join(' '); }

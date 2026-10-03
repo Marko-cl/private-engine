@@ -1,0 +1,9 @@
+# Optional Linux-to-Windows packaging environment.
+# Not tested in the current sandbox; requires Docker and Wine support.
+FROM electronuserland/builder:wine
+WORKDIR /project
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+RUN npx electron-builder --win --x64 --publish never

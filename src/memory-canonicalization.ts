@@ -1,0 +1,2 @@
+const ALIASES: Record<string, string> = { js: 'JavaScript', javascript: 'JavaScript', ts: 'TypeScript', typescript: 'TypeScript', 'godot engine': 'Godot', godot: 'Godot', gdscript: 'GDScript', nodejs: 'Node.js', node: 'Node.js', 'c plus plus': 'C++', cpp: 'C++', reactjs: 'React' };
+export function canonicalMemoryConcept(value: string) { const trimmed = value.trim().replace(/\s+/g, ' '); return ALIASES[trimmed.toLowerCase()] ?? trimmed.slice(0, 120); }

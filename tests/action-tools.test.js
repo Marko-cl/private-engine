@@ -1,0 +1,18 @@
+const test=require('node:test');const assert=require('node:assert/strict');const {PermissionManager}=require('../dist/main/permission-manager');const {AGENT_TOOLS}=require('../dist/agent-tools');
+const apps=[{id:'godot',label:'Godot',path:'/trusted/Godot.exe'}];const folders=[{id:'3d_horror',label:'3D Horror',path:'/trusted/3d_horror'}];const manager=new PermissionManager(AGENT_TOOLS,{applications:apps,folders});
+const req=(tool,args)=>({toolName:tool,arguments:args,requiresConfirmation:true,sourceContext:'Game Development / Godot',reason:'test'});
+test('unknown tool rejected',()=>assert.equal(manager.validateAction(req('execute_command',{command:'x'})).ok,false));
+test('level 3 tool rejected',()=>assert.equal(manager.validateAction(req('powershell',{script:'x'})).ok,false));
+test('level 2 requires confirmation',()=>assert.equal(manager.validateAction({...req('open_url',{url:'https://example.com'}),requiresConfirmation:false}).ok,false));
+test('read-only level 0 is not an action',()=>assert.equal(manager.validateAction(req('get_memory',{name:'Godot'})).ok,false));
+test('https accepted',()=>assert.equal(manager.validateAction(req('open_url',{url:'https://example.com'})).ok,true));
+test('http accepted',()=>assert.equal(manager.validateAction(req('open_url',{url:'http://example.com'})).ok,true));
+for(const protocol of ['javascript:alert(1)','data:text/plain,x','file:///tmp/x','vbscript:msgbox(1)'])test(`${protocol} rejected`,()=>assert.equal(manager.validateAction(req('open_url',{url:protocol})).ok,false));
+test('malformed URL rejected',()=>assert.equal(manager.validateAction(req('open_url',{url:'not a url'})).ok,false));
+test('allowlisted application accepted',()=>assert.equal(manager.validateAction(req('open_application',{applicationId:'godot'})).ok,true));
+test('unknown application rejected',()=>assert.equal(manager.validateAction(req('open_application',{applicationId:'unknown'})).ok,false));
+test('arbitrary executable path rejected',()=>assert.equal(manager.validateAction(req('open_application',{applicationId:'/trusted/Godot.exe'})).ok,false));
+test('approved folder accepted',()=>assert.equal(manager.validateAction(req('open_approved_folder',{folderId:'3d_horror'})).ok,true));
+test('unknown folder rejected',()=>assert.equal(manager.validateAction(req('open_approved_folder',{folderId:'/users/me'})).ok,false));
+test('arbitrary folder path rejected',()=>assert.equal(manager.validateAction(req('open_approved_folder',{folderId:'/users/me'})).ok,false));
+test('unexpected action arguments rejected',()=>assert.equal(manager.validateAction(req('open_url',{url:'https://example.com',shell:'x'})).ok,false));

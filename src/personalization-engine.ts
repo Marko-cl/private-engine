@@ -1,0 +1,7 @@
+import { FeedbackSummary, PersonalizationSummary, PreferenceRecord } from './shared/contracts';
+import { PreferenceEngine } from './preference-engine';
+
+export function buildPersonalizationSummary(preferences: PreferenceRecord[], feedback: FeedbackSummary, limit = 8): PersonalizationSummary {
+  const engine = new PreferenceEngine(); const top = engine.getTopPreferences(preferences, limit); const recent = [...preferences].sort((a,b) => b.lastSeen.localeCompare(a.lastSeen) || a.name.localeCompare(b.name)).slice(0, limit); const rising = engine.getRisingPreferences(preferences, limit); const declining = engine.getDecliningPreferences(preferences, limit); const projects = preferences.filter(preference => preference.sourceType === 'project').slice(0, limit); const feedbackPatterns = Object.entries(feedback.byTopic).map(([name, counts]) => ({ name, category: '', useful: counts.useful, notUseful: counts.not_useful })).filter(item => item.useful || item.notUseful).sort((a,b) => (b.useful - b.notUseful) - (a.useful - a.notUseful) || a.name.localeCompare(b.name)).slice(0, limit); return { topInterests: top, recentInterests: recent, risingInterests: rising, decliningInterests: declining, projectAssociations: projects, feedbackPatterns };
+}
+export function explainPreference(preference: PreferenceRecord) { return preference.evidenceSummary || `Evidence count: ${preference.evidenceCount}; ${(preference.totalSeconds / 3600).toFixed(1)} hours total.`; }

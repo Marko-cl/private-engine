@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Private Context Engine Connector",
+  "version": "0.1.0",
+  "description": "Optional minimized active-tab context connector for the local Private Context Engine.",
+  "permissions": ["tabs", "storage", "alarms"],
+  "host_permissions": ["http://127.0.0.1:47631/*"],
+  "background": { "service_worker": "background/service-worker.js", "type": "module" },
+  "action": { "default_title": "Private Context Engine", "default_popup": "popup.html" }
+}
