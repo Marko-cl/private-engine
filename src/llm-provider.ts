@@ -1,4 +1,4 @@
-import { AgentResponse, CurrentContext, FeedbackSummary, MemoryRecord, PreferenceRecord, Recommendation } from './shared/contracts';
+import { CurrentContext, FeedbackSummary, MemoryRecord, PreferenceRecord, Recommendation } from './shared/contracts';
 import { emptyFeedbackSummary } from './feedback-engine';
 
 export interface LLMRequest { systemPrompt: string; userPrompt: string; context: Pick<CurrentContext, 'category'|'topic'|'project'|'technologies'|'confidence'> | null; memories: Array<Pick<MemoryRecord, 'name'|'category'|'strength'|'confidence'|'evidenceCount'>>; preferences: Array<Pick<PreferenceRecord, 'name'|'category'|'strength'|'confidence'|'evidenceCount'|'trend'|'evidenceSummary'|'distinctDays'|'timePattern'|'projects'|'technologies'|'sourceTypes'|'projectContinuity'>>; recommendations: Array<Pick<Recommendation, 'title'|'category'|'reason'|'confidence'|'score'>>; feedback?: FeedbackSummary; }

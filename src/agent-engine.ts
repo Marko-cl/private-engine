@@ -5,7 +5,7 @@ import { buildLLMContext, LLMProvider } from './llm-provider';
 import { validateAgentResponses } from './agent-validation';
 
 export class AgentEngine {
-  generate(context: CurrentContext | null, memories: MemoryRecord[] = [], preferences: PreferenceRecord[] = [], recommendations: Recommendation[] = [], tools: AgentTool[] = [], createdAt = new Date().toISOString()): AgentResponse[] {
+  generate(context: CurrentContext | null, memories: MemoryRecord[] = [], preferences: PreferenceRecord[] = [], recommendations: Recommendation[] = [], tools: AgentTool[] = [], _createdAt = new Date().toISOString()): AgentResponse[] {
     if (!context) return [];
     const available = enabledAgentTools(tools);
     const responses: AgentResponse[] = [];

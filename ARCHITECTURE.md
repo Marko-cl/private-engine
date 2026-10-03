@@ -1017,3 +1017,49 @@ Each candidate was tested as a separate incremental `package.json` override. Aft
 | `electron-builder-squirrel-windows@26.15.3` | retained; local suite passed; Windows packaging unconfirmed | remained at 11 | aligns the transitive package with the installed electron-builder release; no additional audit reduction |
 
 The current audit result is `1 moderate, 10 high, 0 critical, 11 total`. This is an audit result, not proof that all remaining packages are safe or that the Windows installer works. The Windows workflow remains unexecuted in this environment.
+
+## Maintenance quality and efficiency review
+
+This maintenance pass preserved application behavior, privacy boundaries, IPC names and DTO shapes, database column definitions, permission checks, approval gates, audit behavior, and the electron-builder `files` glob.
+
+```text
+Dead code removed: unused local values/imports removed in
+  src/agent-engine.ts, src/category-classifier.ts, src/llm-provider.ts,
+  src/main/action-executor.ts, src/main/database.ts, src/main/main.ts, and
+  src/unified-context.ts. The unused parameters in src/agent-engine.ts and
+  src/goal-engine.ts were explicitly marked with underscore names to preserve
+  their public call signatures. No unused exported API or unused source file
+  was removed.
+Duplication consolidated: none found that was identical and safe to merge.
+File reorganization: none needed; existing modules were cohesive.
+Database indexes added: none; reviewed WHERE/JOIN/ORDER BY usage was already
+  covered by the existing migration indexes.
+N+1 queries fixed: ActivityDatabase.plans() now loads all selected plan steps
+  with one bounded batched query instead of one query per plan. Plan and step
+  ordering is preserved.
+Hot-path efficiency changes: none; no scoring weights, thresholds, formulas,
+  or hot-path outputs were changed.
+TypeScript strictness: strict was already enabled. noUnusedLocals and
+  noUnusedParameters were enabled after the existing nine diagnostics were
+  removed; typecheck passes with both flags.
+Lint/format: added TypeScript-aware ESLint flat configuration,
+  .prettierrc.json, ESLint and Prettier dev dependencies, and `lint` and
+  `format:check` scripts. ESLint and format:check both pass. No repo-wide
+  source reformat was applied.
+```
+
+The existing performance command was measured before and after the maintenance changes. The initial baseline reported `projectProfiles=21`, `recommendations=9`, `importPreview=10`, and `exportBytes=2098083`. Two separate performance runs after the maintenance pass produced different synthetic values: run A reported `projectProfiles=22`, `recommendations=11`, `importPreview=12`, and run B reported `projectProfiles=22`, `recommendations=14`, `importPreview=16`; both reported `exportBytes=2098083`. These values are consistent with expected run-to-run variance in the random synthetic dataset, and neither represents a regression. No performance improvement is claimed. The N+1 query change was verified by a new targeted database test covering zero-step, maximum-10-step, and multiple-plan cases, plus the existing suite; the performance command does not expose a dedicated plan-query timing.
+
+Final maintenance validation:
+
+```text
+Typecheck: PASS
+Build: PASS
+Tests: PASS — 147 passed, 0 failed, 0 skipped
+Recovery: PASS
+Performance: PASS — synthetic suite completed
+Clean startup: PASS
+Release check: PASS
+Lint: PASS
+Format check: PASS
+```

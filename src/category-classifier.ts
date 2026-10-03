@@ -4,7 +4,6 @@ export const CATEGORIES = ['Programming','Game Development','Gaming','School','L
 
 export class CategoryClassifier {
   classify(activities: ActivitySummary[]): ActivityCategory {
-    const text = activities.map(a => `${a.application} ${a.title ?? ''}`).join(' ').toLowerCase();
     const scores: Record<string, number> = Object.fromEntries(CATEGORIES.map(c => [c, 0]));
     const add = (category: string, points: number) => { scores[category] += points; };
     for (const a of activities) {

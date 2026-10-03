@@ -15,7 +15,9 @@
     "recovery": "npm run build && node tests/database-recovery.phase22.js",
     "release-check": "npm run build && node scripts/release-check.js",
     "clean-startup": "npm run build && node tests/clean-startup.phase24.js",
-    "package:win": "npm run build && electron-builder --win --x64 --publish never"
+    "package:win": "npm run build && electron-builder --win --x64 --publish never",
+    "lint": "eslint src",
+    "format:check": "prettier --check eslint.config.mjs .prettierrc.json tsconfig.json"
   },
   "dependencies": {
     "active-win": "^8.2.1",
@@ -23,12 +25,16 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/better-sqlite3": "^9.6.0",
     "@types/node": "^22.7.4",
     "copyfiles": "^2.4.1",
     "electron": "^32.3.3",
     "electron-builder": "^26.15.3",
-    "typescript": "^5.6.2"
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.9",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.71.0"
   },
   "build": {
     "appId": "com.privatecontextengine.desktop",

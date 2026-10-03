@@ -55,3 +55,7 @@ External LLM use is disabled by default and requires explicit configuration. Onl
 - Browser validation is static/local unless a Chromium environment is available.
 - `npm audit` currently reports 11 vulnerabilities (1 moderate, 10 high, 0 critical) after verified dependency overrides; see `ARCHITECTURE.md` for the package paths, override experiments, and compatibility risks.
 - Windows NSIS packaging is configured via `npm run package:win`; local Linux packaging is blocked by the native `active-win` cross-build path. Use `.github/workflows/package-windows.yml` on a Windows runner with Node 22.
+
+## Maintenance validation
+
+The latest maintenance pass preserved the existing privacy, security, IPC, DTO, database, permission, approval, and audit boundaries. It removed confirmed unused locals/imports, batched plan-step loading to avoid one query per plan, enabled TypeScript unused-code checks, and added TypeScript-aware ESLint plus Prettier configuration. No hot-path performance improvement is claimed; the synthetic performance measurements vary between runs.

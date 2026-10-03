@@ -8,7 +8,6 @@ export interface CorrelationResult { observations: NormalizedObservation[]; sour
 const clean = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : undefined;
 const canonical = (value: string) => { const key = value.trim().toLowerCase(); const aliases: Record<string, string> = { js: 'JavaScript', javascript: 'JavaScript', ts: 'TypeScript', typescript: 'TypeScript', 'godot engine': 'Godot', gdscript: 'GDScript', 'nodejs': 'Node.js', node: 'Node.js', cpp: 'C++', 'c plus plus': 'C++', git: 'Git' }; return aliases[key] ?? value.trim().slice(0, 60); };
 const sourceOf = (value?: string): UnifiedSource => value === 'browser' ? 'browser' : value === 'folder' ? 'folder' : 'desktop';
-const normSet = (values: string[]) => new Set(values.map(value => value.toLowerCase()));
 const ratio = (value: number, max: number) => Math.max(0, Math.min(1, value / Math.max(1, max)));
 
 export function normalizeActivities(activities: ActivitySummary[], now = Date.now()): NormalizedObservation[] {

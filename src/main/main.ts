@@ -16,7 +16,7 @@ import { PermissionManager } from './permission-manager';
 import { ActionExecutor } from './action-executor';
 import { normalizeFeedback } from '../feedback-engine';
 import { buildPersonalizationSummary } from '../personalization-engine';
-import { BrowserContextRecord, MemoryRecord } from '../shared/contracts';
+import { MemoryRecord } from '../shared/contracts';
 import { normalizeDomainRules, validateBrowserPayload } from '../browser-context';
 import { isSensitiveFilename, scanSelectedFolder } from '../folder-context';
 import { Diagnostics } from './diagnostics';

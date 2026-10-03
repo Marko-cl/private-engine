@@ -1,4 +1,4 @@
-import { AgentActionRequest, PendingAgentAction } from '../shared/contracts';
+import { PendingAgentAction } from '../shared/contracts';
 import { PermissionManager } from './permission-manager';
 import type { ActivityDatabase } from './database';
 export interface ActionSystemOperations { openExternal(url: string): Promise<void>; openPath(path: string): Promise<string>; }
