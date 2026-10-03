@@ -1063,3 +1063,31 @@ Release check: PASS
 Lint: PASS
 Format check: PASS
 ```
+
+## Phase 25 local related-activity and renderer UX update
+
+The cold-start review confirmed that recommendations are enabled by default, use a daily limit of 10, and are generated during the normal state-refresh path. The existing preference safety boundary remains unchanged: preferences require memory evidence count of at least 2. No evidence or recommendation threshold was lowered.
+
+`recommendationFrequency` is now functional without changing the recommendation weights `0.35 / 0.30 / 0.20 / 0.15`. It selects a bounded minimum recommendation score: `low=34`, `normal=28`, and `high=22`. The setting remains validated through the existing main-process setting boundary and the renderer control now has distinct behavior.
+
+A new validated `get-related-to-current-activity` IPC method returns a bounded local DTO with at most 8 items. It derives memory, preference, project, and prior-recommendation relationships from the current unified context, existing concept-cluster relationships, and semantic-memory matches already produced by the local semantic engine. It returns an explicit empty reason when no match exists and exposes no raw URLs, paths, vectors, or content.
+
+The default renderer now shows a compact `Right now` block with the current local context and related items. Recommendation empty states distinguish disabled recommendations, cold-start learning with no topic/project, and no worthwhile suggestion. Recommendation signals and confidence scores are behind `More controls`. Goals, Recommendations, Timeline, and Right now include short plain-language explanations. Existing security settings, observation sources, IPC boundaries, persistence schema, and approval flows were preserved.
+
+A deterministic scenario was verified with inserted in-memory test data:
+
+```text
+Cold context: topic Godot, project Horror Game, technology GDScript,
+  no memories/preferences
+Related result: items=[], emptyReason="Nothing related found yet for this activity."
+Recommendation result: Continue working on Horror Game (score 49),
+  Learn more about Enemy AI (score 47)
+
+After one stored Godot memory with evidenceCount 2 across 2 days and a
+  derived preference:
+Related result: memory Godot, project Horror Game, preference Godot
+Recommendation result: Continue working on Horror Game (score 79),
+  Learn more about Enemy AI (score 79)
+```
+
+The targeted test `tests/related-activity.test.js` verifies the cold-start empty result, repeated-evidence related items, the 8-item cap, and safe output. Full test count is now 149.

@@ -2,7 +2,7 @@ import { ActivitySummary, CurrentContext, FeedbackSummary, Goal, MemoryRecord, P
 import { emptyFeedbackSummary, feedbackAdjustment } from './feedback-engine';
 
 export class RecommendationEngine {
-  generate(context: CurrentContext | null, memories: MemoryRecord[] = [], preferences: PreferenceRecord[] = [], recent: ActivitySummary[] = [], feedbackOrCreatedAt: FeedbackSummary | string = emptyFeedbackSummary(), createdAt = new Date().toISOString(), semanticRelevance = 0, goals: Goal[] = []): Recommendation[] {
+  generate(context: CurrentContext | null, memories: MemoryRecord[] = [], preferences: PreferenceRecord[] = [], recent: ActivitySummary[] = [], feedbackOrCreatedAt: FeedbackSummary | string = emptyFeedbackSummary(), createdAt = new Date().toISOString(), semanticRelevance = 0, goals: Goal[] = [], minimumScore = 28): Recommendation[] {
     if (!context) return [];
     const feedback = typeof feedbackOrCreatedAt === 'string' ? emptyFeedbackSummary() : feedbackOrCreatedAt;
     if (typeof feedbackOrCreatedAt === 'string') createdAt = feedbackOrCreatedAt;
@@ -24,7 +24,7 @@ export class RecommendationEngine {
       const semanticAdjustment = Math.max(0, Math.min(4, Number.isFinite(semanticRelevance) ? semanticRelevance * 4 : 0));
       const goalRelevance = goals.some(goal => goal.status === 'active' && `${goal.title} ${goal.category} ${goal.associations.projects.join(' ')} ${goal.associations.technologies.join(' ')}`.toLowerCase().includes(`${context.topic ?? ''} ${context.project ?? ''}`.trim().toLowerCase())) ? 3 : 0;
       const score = Math.round(Math.min(100, Math.max(0, baseScore + adjustment + semanticAdjustment + goalRelevance)));
-      if (score < 28) return;
+      if (score < minimumScore) return;
       const confidence = Math.min(0.99, Math.max(0.2, context.confidence * 0.4 + prefConfidence * 0.25 + memoryConfidence * 0.2 + recency * 0.15));
       const signals = ['Current context']; if ((values.preference ?? 0) > 0) signals.push('Preference'); if ((values.memory ?? 0) > 0) signals.push('Memory'); if ((values.recent ?? 0) > 0) signals.push('Recency'); if ((semanticRelevance > 0)) signals.push('Semantic support'); if (goals.some(goal => goal.status === 'active' && (goal.category === context.category || goal.associations.projects.includes(context.project ?? '') || goal.associations.technologies.some(t => context.technologies.includes(t))))) signals.push('Active goal'); if (adjustment !== 0) signals.push('Feedback'); candidates.push({ id: `recommendation:${type}:${this.slug(title)}`, type, title, description, category, reason, confidence, score, createdAt, sourceContext, topic: context.topic, project: context.project, signals });
     };

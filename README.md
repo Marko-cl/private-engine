@@ -59,3 +59,7 @@ External LLM use is disabled by default and requires explicit configuration. Onl
 ## Maintenance validation
 
 The latest maintenance pass preserved the existing privacy, security, IPC, DTO, database, permission, approval, and audit boundaries. It removed confirmed unused locals/imports, batched plan-step loading to avoid one query per plan, enabled TypeScript unused-code checks, and added TypeScript-aware ESLint plus Prettier configuration. No hot-path performance improvement is claimed; the synthetic performance measurements vary between runs.
+
+## Current context suggestions
+
+The default view includes a local-only `Right now` section that connects current context to existing memories, preferences, projects, technologies, semantic matches, and prior recommendations. It never searches the internet or adds an observation source. Empty states explain whether the app is still learning, recommendations are disabled, or no local relationship was found.

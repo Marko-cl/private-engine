@@ -4,6 +4,7 @@ import { ElectronAPI } from '../shared/contracts';
 const api: ElectronAPI = {
   getAppInfo: () => ipcRenderer.invoke('app-info'),
   getState: () => ipcRenderer.invoke('state'),
+  getRelatedToCurrentActivity: () => ipcRenderer.invoke('get-related-to-current-activity'),
   getContextExplanation: () => ipcRenderer.invoke('get-context-explanation'),
   getGoals: () => ipcRenderer.invoke('get-goals'),
   createGoal: (input) => ipcRenderer.invoke('create-goal', input),
